@@ -1,3 +1,4 @@
+import { Status } from './enum/status.enum';
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, startWith, map } from 'rxjs/operators';
@@ -13,6 +14,9 @@ import { ServerService } from './service/server.service';
 })
 export class AppComponent implements OnInit {
   appState$: Observable<AppState<CustomResponse>>;
+  readonly DataState = DataState;
+  readonly Status = Status;
+
   constructor(private serveService: ServerService) {}
 
   ngOnInit(): void {

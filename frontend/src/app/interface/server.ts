@@ -2,7 +2,7 @@ import { Status } from '../enum/status.enum';
 
 export interface Server {
   id: number;
-  ipAdress: string;
+  ipAddress: string;
   name: string;
   memory: string;
   type: string;

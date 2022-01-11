@@ -1,10 +1,10 @@
-import { Status } from './../enum/status.enum';
-import { Server } from './../interface/server';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { CustomResponse } from '../interface/custom-response';
+import { Status } from './../enum/status.enum';
+import { Server } from './../interface/server';
 
 @Injectable({
   providedIn: 'root',
@@ -35,14 +35,31 @@ export class ServerService {
     );
 
   filter$ = (status: Status, response: CustomResponse) =>
-    new Observable<CustomResponse>(
-      suscriber => {
-        console.log(response);
-        suscriber.next(
-          status === Status.ALL ? { ...response, message : `Servers filteres by ${status} status`}
-        )
-      }
-    )
+    new Observable<CustomResponse>((suscriber) => {
+      console.log(response);
+      suscriber.next(
+        status === Status.ALL
+          ? { ...response, message: `Servers filteres by ${status} status` }
+          : {
+              ...response,
+              message:
+                response.data.servers.filter(
+                  (server) => server.status === status
+                ).length > 0
+                  ? `Servers filtered by
+              $${
+                status === Status.SERVER_UP ? 'SERVER UP' : 'SERVER DOWN'
+              } status`
+                  : `No servers of ${status} found`,
+              data: {
+                servers: response.data.servers.filter(
+                  (server) => server.status === status
+                ),
+              },
+            }
+      );
+      suscriber.complete();
+    }).pipe(tap(console.log), catchError(this.handleError));
 
   delete$ = (serverId: number) =>
     <Observable<CustomResponse>>(

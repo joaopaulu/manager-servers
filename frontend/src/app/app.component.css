@@ -281,6 +281,10 @@ table.table .avatar {
     cursor: pointer;
 }
 
-.ico-spin{
-  font-size:24px
+.ico-spin {
+    font-size: 24px
+}
+
+.btn-filter {
+    height: 32.91px;
 }

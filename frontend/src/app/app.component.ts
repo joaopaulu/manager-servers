@@ -1,6 +1,6 @@
 import { Status } from './enum/status.enum';
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, startWith, map } from 'rxjs/operators';
 import { DataState } from './enum/data-state.enum';
 import { AppState } from './interface/app-state';
@@ -16,13 +16,21 @@ export class AppComponent implements OnInit {
   appState$: Observable<AppState<CustomResponse>>;
   readonly DataState = DataState;
   readonly Status = Status;
+  private filterSubject = new BehaviorSubject<string>('');
+  filterStatus$ = this.filterSubject.asObservable();
 
   constructor(private serveService: ServerService) {}
 
   ngOnInit(): void {
     this.appState$ = this.serveService.servers$.pipe(
       map((response) => {
-        return { dataState: DataState.LOADED_STATE, appData: response };
+        return {
+          dataState: DataState.LOADED_STATE,
+          appData: {
+            ...response,
+            data: { servers: response.data.servers.reverse() },
+          },
+        };
       }),
       startWith({ dataState: DataState.LOADED_STATE }),
       catchError((error: string) => {

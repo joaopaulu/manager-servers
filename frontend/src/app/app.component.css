@@ -280,3 +280,7 @@ table.table .avatar {
 .pointer {
     cursor: pointer;
 }
+
+.ico-spin{
+  font-size:24px
+}
